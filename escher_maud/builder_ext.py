@@ -24,6 +24,16 @@ class BuilderMaud(escher.Builder):
         """Save an HTML file containing the map.
 
         Adapted from `escher.Builder.save_html`.
+
+        Parameters
+        ----------
+        output_file: str,
+            name of the HTML that will be generated.
+        posterior_flux: dict[str, list[float]],
+            generated with :py:func:`escher_maud.vis.get_flux_posteriors`
+        posterior_conc: dict[str, list[float]],
+            generated with :py:func:`escher_maud.vis.get_conc_posteriors`
+
         """
         options = {}
         for key in self.traits(option=True):

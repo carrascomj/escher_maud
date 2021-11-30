@@ -93,7 +93,27 @@ def main(
     escher_json: click.Path,
     output_html: click.Path,
 ):
-    """Generate standalone escher map with maud posteriors in the tooltip."""
+    """Generate standalone escher map with maud posteriors in the tooltip.
+
+    Parameters
+    ----------
+    output_maud: click.Path
+        path to a maud output directory generated with `maud sample`
+    escher_json: click.Path
+        path to a JSON escher map
+    output_html: click.Path
+        name of the HTML that will be generated
+
+    Example
+    -------
+
+    .. code-block:: shell
+
+       git clone https://github.com/carrascomj/escher_maud.git
+       cd escher_maud/tests/data
+       escher_maud map_escher_iclau786.json maud_output_c747bcd761 index.html
+
+    """
     infd = az.from_netcdf(join(output_maud, "infd.nc"))
     flux_reacs, conc_mets = get_summary_data(infd)
     escher_map = setup_map(escher_json)
