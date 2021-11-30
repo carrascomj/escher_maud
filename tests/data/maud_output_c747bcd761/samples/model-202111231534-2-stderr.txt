@@ -1,0 +1,5 @@
+Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+CVODES: CVode At t = 1000 and h = -2.85152e-41, the error test failed repeatedly or with |h| = hmin. Error code: -3
+If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+

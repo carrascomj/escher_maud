@@ -1,0 +1,15 @@
+Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+CVODES: CVode At t = 852.878 and h = -0.000492293, the error test failed repeatedly or with |h| = hmin. Error code: -3
+If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+
+Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+CVODES: CVode At t = 1000 and h = -1.98311e-37, the error test failed repeatedly or with |h| = hmin. Error code: -3
+If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+
+Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+Exception: model_model_namespace::log_prob: conc[sym1__, sym2__] is -3.59414e+12, but must be greater than or equal to 0.000000 (in '/home/georg/.virtualenvs/maud/lib/python3.9/site-packages/maud/model.stan', line 127, column 2 to column 50)
+If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+

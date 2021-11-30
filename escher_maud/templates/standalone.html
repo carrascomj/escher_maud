@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Escher Builder</title>
+
+    <script src="https://unpkg.com/escher@1.7.3/dist/escher.min.js"></script>
+    <!-- Use extra d3 features -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, height=device-height,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui"/>
+  </head>
+  <body>
+    <div style="height: 100%; width: 100%;" id="map-container"></div>
+
+    <script>
+      const preact = escher.libs.preact;
+      const h = preact.createElement;
+      const Component = preact.Component;
+
+      var tooltipStyle = {
+        'min-width': '40px',
+        'min-height': '10px',
+        'border-radius': '2px',
+        'border': '1px solid #b58787',
+        'padding': '7px',
+        'background-color': '#fff',
+        'text-align': 'left',
+        'font-size': '16px',
+        'font-family': 'sans-serif',
+        'color': '#111',
+        'box-shadow': '4px 6px 20px 0px rgba(0, 0, 0, 0.4)'
+      };
+
+      class Tooltip2 extends Component {
+        componentShouldUpdate() {
+          return false;
+        }
+
+        componentWillReceiveProps(nextProps) {
+          // Clear tooltip
+          const base = d3.select(this.base);
+          base.selectAll('*').remove();
+
+          // Reaction Id
+          var biggId = nextProps.biggId;
+          const isReac = nextProps.type === "reaction";
+					// TODO: can this be from nextProps?
+          const color = isReac ?  "#6790df" : "#df855b";
+					const maud_data = get_maud_data();
+          var dataset = isReac ?  maud_data.maud_fluxes : maud_data.maud_concs ;
+					if (!dataset.hasOwnProperty(biggId)) {
+						return;
+
+
+					}
+
+          // Set margins and size for the plot
+          const margin = { top: 30, right: 20, bottom: 40, left: 40 };
+          const width = 250 - margin.left - margin.right;
+          const height = 300 - margin.top - margin.bottom;
+
+          // Create D3 scales
+          var x = d3.scaleBand().range([0, width]).paddingInner(0.1).paddingOuter(0.2)
+          var y = d3.scaleLinear().range([height, 0])
+
+          /**
+          * Tooltip function that shows histograms with flux posterior distributions
+          */
+            const svg = base.append('svg')
+                    .attr('width', width + margin.left + margin.right)
+                    .attr('height', height + margin.top + margin.bottom)
+                    .append('g')
+                    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+          var x = d3.scaleLinear()
+                .domain([d3.min(dataset[biggId], function(d) { return +d }), d3.max(dataset[biggId], function(d) { return +d })])
+                .range([0, width]);
+            svg.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x))
+                // rotate x-axis
+                .selectAll("text")  
+                  .style("text-anchor", "end")
+                  .attr("transform", "rotate(-40)" );
+
+
+            // set the parameters for the histogram
+            var histogram = d3.histogram()
+                .value(function(d) { return d; })   // I need to give the vector of value
+                .domain(x.domain())  // then the domain of the graphic
+                .thresholds(x.ticks(70)); // then the numbers of bins
+
+            // And apply this function to data to get the bins
+            var bins = histogram(dataset[biggId]);
+
+            // Y axis: scale and draw:
+            var y = d3.scaleLinear()
+                .range([height, 0]);
+                y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
+            svg.append("g")
+                .call(d3.axisLeft(y));
+
+            // append the bar rectangles to the svg element
+            svg.selectAll("rect")
+                .data(bins)
+                .enter()
+                .append("rect")
+                  .attr("x", 1)
+                  .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+                  .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
+                  .attr("height", function(d) { return height - y(d.length); })
+                  .style("fill", color)
+						svg.append("text")
+								.attr("x", (width / 2))             
+								.attr("y", 0 - (margin.top / 2))
+								.attr("text-anchor", "middle")  
+								.style("font-size", "16px") 
+								.style("text-decoration", "underline")  
+								.text(isReac ? `ν(${biggId}) posterior` : `[${biggId}] posterior`);
+						}
+
+            render() {
+              // Style the text based on our tooltip_style object
+              return h('div', { style: tooltipStyle });
+            }
+      }
+
+     /* Data from python */
+     var data = get_data();
+     var maudFluxes = data.maud_fluxes;
+
+     var maudConcs = data.maud_concs;
+     data.options.tooltip_component = Tooltip2;
+
+     escher.Builder(data.map_data, data.model_data, data.embedded_css,
+                    escher.libs.d3_select('#map-container'), data.options);
+
+     function b64DecodeUnicode(str) {
+       return decodeURIComponent(Array.prototype.map.call(atob(str), function(c) {
+         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+       }).join(''))
+     }
+
+     // Put this at the end so Chrome doesn't cut off the code above.
+     function get_data() {
+       /** Return the data passed in by the Python module. */
+       const data = {
+         // defaults
+         map_data: null,
+         model_data: null,
+         embedded_css: null,
+         maud_fluxes: null,
+         maud_concs: null,
+         options: {
+           fill_screen: true,
+         }
+       };
+       
+       {% if map_data_json_b64 != None %}
+       data.map_data = JSON.parse(b64DecodeUnicode('{{ map_data_json_b64 }}'));
+       {% endif %}
+       {% if model_data_json_b64 != None %}
+       data.model_data = JSON.parse(b64DecodeUnicode('{{ model_data_json_b64 }}'));
+       {% endif %}
+       {% if embedded_css_b64 != None %}
+       data.embedded_css = b64DecodeUnicode('{{ embedded_css_b64 }}');
+       {% endif %}
+       {% if options_json_b64 != None %}
+       const newOptions = JSON.parse(b64DecodeUnicode('{{options_json_b64}}'));
+       data.options = Object.assign({}, data.options, newOptions);
+       {% endif %}
+       return data;
+     } 
+
+		function get_maud_data() {
+       const data = {
+         // defaults
+         maud_fluxes: null,
+         maud_concs: null,
+       };
+       {% if maud_fluxes_b64 != None %}
+       data.maud_fluxes = JSON.parse(b64DecodeUnicode('{{ maud_fluxes_b64 }}'));
+       {% endif %}
+       {% if maud_concs_b64 != None %}
+       data.maud_concs = JSON.parse(b64DecodeUnicode('{{ maud_concs_b64 }}'));
+       {% endif %}
+			 return data;
+		}
+    </script>
+  </body>
+</html>

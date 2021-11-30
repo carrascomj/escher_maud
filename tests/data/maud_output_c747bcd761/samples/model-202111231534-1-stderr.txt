@@ -1,0 +1,10 @@
+Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+CVODES: CVode At t = 847.201 and h = -0.00330767, the error test failed repeatedly or with |h| = hmin. Error code: -3
+If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+
+Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+Exception: CVODES: CVode Internal t = 36.5715 and h = 1.11518e-18 are such that t + h = t on the next step. The solver will continue anyway. Error code: 99 (in '/home/georg/.virtualenvs/maud/lib/python3.9/site-packages/maud/model.stan', line 135, column 4 to line 180, column 40)
+If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+
