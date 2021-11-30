@@ -3,7 +3,7 @@ name: CI-CD
 on:
   push:
     branches:
-    - master
+    - trunk
     - devel
     tags:
     - '[0-9]+.[0-9]+.[0-9]+'
@@ -15,7 +15,7 @@ on:
     - "**.txt"
   pull_request:
     branches:
-    - master
+    - trunk
     - devel
     paths-ignore:
     - "COPYRIGHT"
