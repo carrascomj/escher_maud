@@ -10,7 +10,7 @@ python = "^3.9"
 Escher = "^1.7.3"
 Jinja2 = "2.7.3,<3"
 arviz = "^0.11.4"
-pandas = "^1.3.4"
+click = "^8.0.3"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=4.0.1,<5"
