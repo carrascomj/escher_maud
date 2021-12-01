@@ -58,7 +58,7 @@ def get_flux_posteriors(
     flux_reacs = {
         # (chain, draw, experiment, reaction)
         reac: {
-            exp: reac_xa.data[0, :, j, i].tolist()
+            exp: reac_xa.data[:, :, j, i].flatten().tolist()
             for j, exp in enumerate(reac_xa.experiments.data)
         }
         for i, reac in enumerate(reac_xa.coords["reactions"].data)
@@ -74,7 +74,7 @@ def get_conc_posteriors(
     # TODO: handle chains
     conc_mets = {
         met: {
-            exp: met_xa.data[0, :, j, i].tolist()
+            exp: met_xa.data[:, :, j, i].flatten().tolist()
             for j, exp in enumerate(met_xa.experiments.data)
         }
         for i, met in enumerate(met_xa.coords["mics"].data)
