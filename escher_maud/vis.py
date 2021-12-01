@@ -27,6 +27,7 @@ def setup_map(
         {"type": "median", "color": "#ffaf42", "size": 20},
         {"type": "max", "color": "#fd5602", "size": 25},
     ]
+    escher_map.enable_tooltips = ["label"]
     return escher_map
 
 
