@@ -48,10 +48,15 @@
 					.append('option')
 					.text(function (d) { return d; }) // text showed in the menu
 					.attr("value", function (d) { return d; }) // corresponding value returned by the button
+					// Listen to menu
+					var currExp = allGroups[0];
+					d3.select("#selectButton").on("change", function(d){
+							currExp = this.value
+					});
 
 				class Tooltip2 extends Component {
 				 componentShouldUpdate() {
-					 return false;
+					 return true;
 				 }
 
 				 componentWillReceiveProps(nextProps) {
@@ -69,7 +74,6 @@
 						return;
 					}
 					var allGroups = Object.keys(dataset[biggId])
-					var firstExp = allGroups[0]
 
 					 // Set margins and size for the plot
 					 const margin = { top: 30, right: 20, bottom: 40, left: 40 };
@@ -89,7 +93,7 @@
 										 .append('g')
 										 .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 					 var x = d3.scaleLinear()
-								 .domain([d3.min(dataset[biggId][firstExp], function(d) { return +d }), d3.max(dataset[biggId][firstExp], function(d) { return +d })])
+								 .domain([d3.min(dataset[biggId][currExp], function(d) { return +d }), d3.max(dataset[biggId][currExp], function(d) { return +d })])
 								 .range([0, width]);
 						 svg.append("g")
 								 .attr("transform", "translate(0," + height + ")")
@@ -109,16 +113,17 @@
 					function updateChart(selectedGroup) {
 								 // And apply this function to data to get the bins
 						var thisData = dataset[biggId][selectedGroup];
-								 var bins = histogram(thisData);
+						console.log(thisData)
+						var bins = histogram(thisData);
 
-								 // Y axis: scale and draw:
-								 var y = d3.scaleLinear()
-										 .range([height, 0]);
-										 y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
-								 svg.append("g")
-										 .call(d3.axisLeft(y));
+						// Y axis: scale and draw:
+						var y = d3.scaleLinear()
+						 	 .range([height, 0]);
+						 	 y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
+						svg.append("g")
+							 .call(d3.axisLeft(y));
 
-								 // append the bar rectangles to the svg element
+ 					  // append the bar rectangles to the svg element
 						var u = svg.selectAll("rect")
 										 .data(bins);
 						u
@@ -139,14 +144,8 @@
 									.style("text-decoration", "underline")
 									.text(isReac ? `ν(${biggId}) posterior` : `[${biggId}] posterior`);
 
-					// hook to recompute the chart
 					}
-					updateChart(firstExp)
-					// Listen to menu
-					d3.select("#selectButton").on("change", function(d){
-							selectedGroup = this.value
-							updateChart(selectedGroup)
-					})
+					updateChart(currExp);
 
 
 							}
@@ -159,9 +158,6 @@
 
 					/* Data from python */
 					var data = get_data();
-					var maudFluxes = data.maud_fluxes;
-
-					var maudConcs = data.maud_concs;
 					data.options.tooltip_component = Tooltip2;
 
 					escher.Builder(data.map_data, data.model_data, data.embedded_css,
