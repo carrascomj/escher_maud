@@ -51,8 +51,23 @@ def get_summary_data(
 
 def get_flux_posteriors(
     infd: az.InferenceData,
-) -> dict[str, list[float]]:
-    """Retrieve flux posterior distributions over the chains."""
+) -> dict[str, dict[str, list[float]]]:
+    r"""Retrieve flux posterior distributions over the chains.
+
+    Returns
+    -------
+    flux_reacs: dict[str, dict[str, list[float]]]
+        {
+            "REACTION 0": {
+                "EXPERIMENT a": [draw1_chan1, draw1_chain2, draw2_chain1, ...],
+                "EXPERIMENT b": [draw1_chan1, draw1_chain2, draw2_chain1, ...]
+            },
+            "REACTION 1": {
+                "EXPERIMENT a": [draw1_chan1, draw1_chain2, draw2_chain1, ...],
+                "EXPERIMENT b": [draw1_chan1, draw1_chain2, draw2_chain1, ...]
+            }
+        }
+    """
     reac_xa = infd.posterior["flux"]
     # TODO: handle chains
     flux_reacs = {
@@ -68,8 +83,23 @@ def get_flux_posteriors(
 
 def get_conc_posteriors(
     infd: az.InferenceData,
-) -> dict[str, list[float]]:
-    """Retrieve concentration posterior distrutions over the chains."""
+) -> dict[str, dict[str, list[float]]]:
+    """Retrieve concentration posterior distrutions over the chains.
+
+    Returns
+    -------
+    conc_mets: dict[str, dict[str, list[float]]]
+        {
+            "METABOLITE 0": {
+                "EXPERIMENT a": [draw1_chan1, draw1_chain2, draw2_chain1, ...],
+                "EXPERIMENT b": [draw1_chan1, draw1_chain2, draw2_chain1, ...]
+            },
+            "METABOLITE 1": {
+                "EXPERIMENT a": [draw1_chan1, draw1_chain2, draw2_chain1, ...],
+                "EXPERIMENT b": [draw1_chan1, draw1_chain2, draw2_chain1, ...]
+            }
+        }
+    """
     met_xa = infd.posterior["conc"]
     # TODO: handle chains
     conc_mets = {
