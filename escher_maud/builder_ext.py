@@ -1,8 +1,8 @@
 """Extend `escher.Builder` with a method that provides a custom tooltip for maud."""
 
 import json
-from typing import Dict, List
 from os.path import expanduser
+from typing import Dict, List
 
 import escher
 from escher.urls import get_url
