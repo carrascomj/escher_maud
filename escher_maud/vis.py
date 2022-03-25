@@ -1,5 +1,6 @@
 """Data processing from infd to escher visualization."""
 from os.path import join
+from typing import Dict, List, Tuple
 
 import arviz as az
 import click
@@ -33,7 +34,7 @@ def setup_map(
 
 def get_summary_data(
     infd: az.InferenceData,
-) -> tuple[dict[str, float], dict[str, float]]:
+) -> Tuple[Dict[str, float], Dict[str, float]]:
     """Retrive the means of the flux and concentrations over the chains."""
     reac_xa = infd.posterior["flux"]
     met_xa = infd.posterior["conc"]
@@ -51,12 +52,12 @@ def get_summary_data(
 
 def get_flux_posteriors(
     infd: az.InferenceData,
-) -> dict[str, dict[str, list[float]]]:
+) -> Dict[str, Dict[str, List[float]]]:
     r"""Retrieve flux posterior distributions over the chains.
 
     Returns
     -------
-    flux_reacs: dict[str, dict[str, list[float]]]
+    flux_reacs: Dict[str, Dict[str, List[float]]]
         {
             "REACTION 0": {
                 "EXPERIMENT a": [draw1_chan1, draw1_chain2, draw2_chain1, ...],
@@ -83,12 +84,12 @@ def get_flux_posteriors(
 
 def get_conc_posteriors(
     infd: az.InferenceData,
-) -> dict[str, dict[str, list[float]]]:
+) -> Dict[str, Dict[str, List[float]]]:
     """Retrieve concentration posterior distrutions over the chains.
 
     Returns
     -------
-    conc_mets: dict[str, dict[str, list[float]]]
+    conc_mets: Dict[str, Dict[str, List[float]]]
         {
             "METABOLITE 0": {
                 "EXPERIMENT a": [draw1_chan1, draw1_chain2, draw2_chain1, ...],

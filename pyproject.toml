@@ -6,7 +6,9 @@ authors = ["carrascomj <carrascomurielj@gmail.com>"]
 license = "GLP-3.0"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.8,<4.0"
+# latest markupsafe pulled by Jinja2 is not compatible with Jinja2
+markupsafe = "^1.1.0"
 Escher = "^1.7.3"
 Jinja2 = "2.7.3,<3"
 arviz = "^0.11.4"

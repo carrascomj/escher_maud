@@ -1,6 +1,7 @@
 """Extend `escher.Builder` with a method that provides a custom tooltip for maud."""
 
 import json
+from typing import Dict, List
 from os.path import expanduser
 
 import escher
@@ -18,8 +19,8 @@ class BuilderMaud(escher.Builder):
     def save_maud_html(
         self,
         output_file: str,
-        posterior_flux: dict[str, list[float]],
-        posterior_conc: dict[str, list[float]],
+        posterior_flux: Dict[str, List[float]],
+        posterior_conc: Dict[str, List[float]],
     ):
         """Save an HTML file containing the map.
 
@@ -29,9 +30,9 @@ class BuilderMaud(escher.Builder):
         ----------
         output_file: str,
             name of the HTML that will be generated.
-        posterior_flux: dict[str, list[float]],
+        posterior_flux: Dict[str, List[float]],
             generated with :py:func:`escher_maud.vis.get_flux_posteriors`
-        posterior_conc: dict[str, list[float]],
+        posterior_conc: Dict[str, List[float]],
             generated with :py:func:`escher_maud.vis.get_conc_posteriors`
 
         """
