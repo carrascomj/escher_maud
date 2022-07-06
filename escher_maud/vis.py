@@ -136,7 +136,7 @@ def main(
     The path to a maud output directory generated with `maud sample` OUTPUT_MAUD
     is applied to a json escher map ESCHER_JSON to compute an html of name OUTPUT_HTML.
     """
-    infd = az.from_netcdf(join(output_maud, "infd.nc"))
+    infd = az.from_netcdf(join(output_maud, "idata.nc"))
     flux_reacs, conc_mets = get_summary_data(infd)
     escher_map = setup_map(escher_json)
     escher_map.reaction_data = flux_reacs
